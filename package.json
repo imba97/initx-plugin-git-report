@@ -1,22 +1,26 @@
 {
-  "name": "initx-plugin-starter",
+  "name": "initx-plugin-git-report",
   "type": "module",
-  "version": "0.0.12",
-  "packageManager": "pnpm@10.26.1",
-  "description": "initx plugin starter template",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.32.1",
+  "description": "generate daily git commit reports for initx",
   "author": "imba97",
   "license": "MIT",
-  "homepage": "https://github.com/initx-collective/initx-plugin-starter#readme",
+  "homepage": "https://github.com/imba97/initx-plugin-git-report#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:initx-collective/initx-plugin-starter.git"
+    "url": "git@github.com:imba97/initx-plugin-git-report.git"
   },
   "bugs": {
-    "url": "https://github.com/initx-collective/initx-plugin-starter/issues"
+    "url": "https://github.com/imba97/initx-plugin-git-report/issues"
   },
   "keywords": [
     "initx",
-    "initx-plugin"
+    "initx-plugin",
+    "git",
+    "report",
+    "daily-report",
+    "commit-log"
   ],
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
@@ -36,13 +40,13 @@
     "@initx-plugin/utils": "*"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.7.3",
+    "@antfu/eslint-config": "^7.7.3",
     "@initx-plugin/core": "*",
     "@initx-plugin/utils": "*",
-    "@types/node": "^25.0.3",
-    "bumpp": "^10.3.2",
-    "eslint": "^9.39.2",
-    "lint-staged": "^16.2.7",
+    "@types/node": "^25.5.0",
+    "bumpp": "^11.0.1",
+    "eslint": "^10.1.0",
+    "lint-staged": "^16.4.0",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^5.9.3",
     "unbuild": "^3.6.1"
