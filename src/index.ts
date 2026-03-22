@@ -11,7 +11,7 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
   defaultStore = {
     name: '',
     email: '',
-    prefix: []
+    prefix: ['fix', 'feat', 'perf', 'refactor']
   }
 
   rules: InitxMatcherRules = [
