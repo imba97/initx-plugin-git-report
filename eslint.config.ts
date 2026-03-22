@@ -2,6 +2,7 @@ import { antfu } from '@antfu/eslint-config'
 
 export default antfu({
   rules: {
-    'style/comma-dangle': ['warn', 'never']
+    'style/comma-dangle': ['warn', 'never'],
+    'no-console': 'off'
   }
 })

@@ -1,17 +1,76 @@
-## initx-plugin-starter
+# initx-plugin-git-report
 
-`initx` plugin starter template.
+`initx` plugin for generating daily git commit reports.
+
+## Features
+
+- Generate daily git reports based on author and date
+- Filter commits by custom prefixes
+- Support multiple query methods (days, date)
+- Persistent configuration storage
+
+## Installation
+
+```bash
+npx initx plugin add git-report
+```
 
 ## Usage
 
+### Basic Commands
+
 ```bash
-npx initx plugin add starter
+# Get today's report
+ix gr
+
+# Get report for specific days (7 days ago)
+ix gr 7
+
+# Get report for specific date
+ix gr 2026-03-22
 ```
 
-try the first command
+**Note:** For days parameter: `0` or `1` = today, `2` = 2 days ago, `3` = 3 days ago, etc.
+
+### Configuration
+
+Before using the plugin, configure your git user information:
 
 ```bash
-npx initx start
+# Set your name
+ix gr config set name "Your Name"
+
+# Set your email
+ix gr config set email "your.email@example.com"
+
+# Set commit prefixes (comma-separated)
+ix gr config set prefix "feat:,fix:,docs:"
+
+# View all configuration
+ix gr config list
+
+# Get specific configuration
+ix gr config get name
+ix gr config get email
+ix gr config get prefix
+```
+
+### How It Works
+
+The plugin:
+1. Runs in your current git project directory
+2. Fetches latest changes from remote
+3. Filters commits by your configured name and email
+4. Optionally filters by configured prefixes (e.g., `feat:`, `fix:`)
+5. Displays formatted report with commit messages
+
+### Example Output
+
+```
+my-project
+- Add new feature for user authentication
+- Fix bug in login flow
+- Update documentation for API
 ```
 
 ## Development
@@ -25,11 +84,15 @@ pnpm stub
 Install plugin from current directory
 
 ```bash
-npx initx plugin add .
+ix plugin add .
 ```
 
 Enjoy your plugin development!
 
 ## Documentation
 
-[initx](https://github.com/initx-collective/initx)
+- [initx](https://github.com/initx-collective/initx)
+
+## License
+
+MIT
