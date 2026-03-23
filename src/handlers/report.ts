@@ -2,7 +2,7 @@ import type { InitxContext } from '@initx-plugin/core'
 import type { Store } from '../types'
 import { execSync } from 'node:child_process'
 import process from 'node:process'
-import { log } from '@initx-plugin/utils'
+import { logger } from '@initx-plugin/utils'
 import { displayCommits } from './display'
 import { parseCommits } from './parser'
 import { getDateDaysAgo } from './utils'
@@ -15,7 +15,7 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     execSync('git fetch', { cwd: projectPath, stdio: 'ignore' })
   }
   catch {
-    log.warn('git fetch failed, using local data')
+    logger.warn('git fetch failed, using local data')
   }
 
   let command = `git log --author="${name} <${email}>" `
@@ -42,6 +42,6 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     displayCommits(projectPath, commits)
   }
   catch {
-    log.error('Failed to get git log')
+    logger.error('Failed to get git log')
   }
 }

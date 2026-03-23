@@ -1,6 +1,6 @@
 import type { InitxContext } from '@initx-plugin/core'
 import type { Store } from '../types'
-import { log } from '@initx-plugin/utils'
+import { logger } from '@initx-plugin/utils'
 
 const NOT_SET = '(not set)'
 
@@ -19,7 +19,7 @@ export async function handleConfig(ctx: InitxContext<Store>, ...args: string[]) 
   const storeKey = key as StoreKey
 
   if (action === 'list') {
-    log.info('Current configuration:')
+    logger.info('Current configuration:')
     for (const k of ['name', 'email', 'prefix'] as StoreKey[]) {
       const rawValue = ctx.store[k]
       const formatter = DISPLAY_FORMATTERS[k]
@@ -35,7 +35,7 @@ export async function handleConfig(ctx: InitxContext<Store>, ...args: string[]) 
       handler(ctx.store, value || '')
     else
       (ctx.store[storeKey] as string) = value || ''
-    log.success(`Set ${key}: ${value}`)
+    logger.success(`Set ${key}: ${value}`)
     return
   }
 

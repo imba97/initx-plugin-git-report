@@ -1,8 +1,8 @@
-import { log } from '@initx-plugin/utils'
+import { logger } from '@initx-plugin/utils'
 
 export function displayCommits(projectPath: string, commits: string[]) {
   if (commits.length === 0) {
-    log.info('No matching commits found')
+    logger.info('No matching commits found')
     return
   }
 

@@ -1,7 +1,7 @@
 import type { InitxContext, InitxMatcherRules } from '@initx-plugin/core'
 import type { Store } from './types'
 import { InitxPlugin } from '@initx-plugin/core'
-import { log } from '@initx-plugin/utils'
+import { logger } from '@initx-plugin/utils'
 import { handleConfig } from './handlers/config'
 import { generateReport } from './handlers/report'
 
@@ -39,7 +39,7 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
         const days = Number(args[0])
         if (!Number.isNaN(days)) {
           if (days < 0) {
-            log.error('Days cannot be negative')
+            logger.error('Days cannot be negative')
             return false
           }
           return true
@@ -58,7 +58,7 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
     }
 
     if (!name || !email) {
-      log.error('Please configure name and email: ix gr config set <key> <value>')
+      logger.error('Please configure name and email: ix gr config set <key> <value>')
       return
     }
 
