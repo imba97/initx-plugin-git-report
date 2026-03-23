@@ -4,34 +4,45 @@ import { log } from '@initx-plugin/utils'
 
 const NOT_SET = '(not set)'
 
+type StoreKey = keyof Store
+
+const SET_HANDLERS: Partial<Record<StoreKey, (store: Store, value: string) => void>> = {
+  prefix: (store, value) => { store.prefix = value.split(',').map(p => p.trim()).filter(Boolean) }
+}
+
+const DISPLAY_FORMATTERS: Partial<Record<StoreKey, (value: any) => string>> = {
+  prefix: value => (value as string[]).length > 0 ? (value as string[]).join(', ') : NOT_SET
+}
+
 export async function handleConfig(ctx: InitxContext<Store>, ...args: string[]) {
   const [action, key, value] = args
+  const storeKey = key as StoreKey
 
   if (action === 'list') {
     log.info('Current configuration:')
-    console.log(`  name: ${ctx.store.name || NOT_SET}`)
-    console.log(`  email: ${ctx.store.email || NOT_SET}`)
-    console.log(`  prefix: ${ctx.store.prefix.length > 0 ? ctx.store.prefix.join(', ') : NOT_SET}`)
+    for (const k of ['name', 'email', 'prefix'] as StoreKey[]) {
+      const rawValue = ctx.store[k]
+      const formatter = DISPLAY_FORMATTERS[k]
+      const displayValue = formatter ? formatter(rawValue) : (rawValue || NOT_SET)
+      console.log(`  ${k}: ${displayValue}`)
+    }
     return
   }
 
-  if (action === 'set') {
-    if (key === 'prefix')
-      ctx.store.prefix = (value || '').split(',').map(p => p.trim()).filter(p => p)
-    else if (key === 'name')
-      ctx.store.name = value
-    else if (key === 'email')
-      ctx.store.email = value
+  if (action === 'set' && storeKey in ctx.store) {
+    const handler = SET_HANDLERS[storeKey]
+    if (handler)
+      handler(ctx.store, value || '')
+    else
+      (ctx.store[storeKey] as string) = value || ''
     log.success(`Set ${key}: ${value}`)
     return
   }
 
-  if (action === 'get') {
-    const value = key === 'prefix'
-      ? ctx.store.prefix.join(', ')
-      : key === 'name'
-        ? ctx.store.name
-        : ctx.store.email
-    console.log(value || NOT_SET)
+  if (action === 'get' && storeKey in ctx.store) {
+    const formatter = DISPLAY_FORMATTERS[storeKey]
+    const rawValue = ctx.store[storeKey]
+    const displayValue = formatter ? formatter(rawValue) : (rawValue || NOT_SET)
+    console.log(displayValue)
   }
 }
