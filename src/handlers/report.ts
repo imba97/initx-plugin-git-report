@@ -2,7 +2,7 @@ import type { InitxContext } from '@initx-plugin/core'
 import type { Store } from '../types'
 import { execSync } from 'node:child_process'
 import process from 'node:process'
-import { logger } from '@initx-plugin/utils'
+import { c, loadingFunction, logger } from '@initx-plugin/utils'
 import { displayCommits } from './display'
 import { parseCommits } from './parser'
 import { getDateDaysAgo } from './utils'
@@ -12,7 +12,10 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
   const projectPath = process.cwd()
 
   try {
-    execSync('git fetch', { cwd: projectPath, stdio: 'ignore' })
+    await loadingFunction(
+      'Fetching git data...',
+      () => c('git fetch', [], { cwd: projectPath })
+    )
   }
   catch {
     logger.warn('git fetch failed, using local data')
