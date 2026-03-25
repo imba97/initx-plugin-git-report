@@ -38,10 +38,6 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
           return true
         const days = Number(args[0])
         if (!Number.isNaN(days)) {
-          if (days < 0) {
-            logger.error('Days cannot be negative')
-            return false
-          }
           return true
         }
         return DATE_REGEX.test(args[0])
@@ -64,8 +60,19 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
 
     const hasTime = ctx.cliOptions.time as boolean || false
 
-    const days = args[0] === undefined ? 0 : Number(args[0])
-    const date = DATE_REGEX.test(args[0]) ? args[0] : null
+    let days = 0
+    let date: string | null = null
+
+    if (ctx.cliOptions.ago) {
+      // ix gr --ago 4 → -4 (4 days ago)
+      days = -Number(ctx.cliOptions.ago)
+    }
+    else if (DATE_REGEX.test(args[0])) {
+      date = args[0]
+    }
+    else {
+      days = args[0] === undefined ? 0 : Number(args[0])
+    }
 
     await generateReport(ctx, days, date, hasTime)
   }

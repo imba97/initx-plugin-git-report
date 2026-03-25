@@ -24,10 +24,23 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     command += `--after="${date} 00:00:00" --before="${date} 23:59:59"`
   }
   else {
-    const effectiveDays = days === 0 || days === 1 ? 0 : days - 1
+    let effectiveDays: number
+    let beforeEndOfDay = false
+
+    if (days < 0) {
+      // Negative: -1 for yesterday, -2 for day before yesterday, etc.
+      effectiveDays = Math.abs(days)
+      beforeEndOfDay = true
+    }
+    else {
+      // Zero, one, or positive days
+      effectiveDays = days === 0 || days === 1 ? 0 : days - 1
+      beforeEndOfDay = effectiveDays === 0
+    }
+
     const startDate = getDateDaysAgo(effectiveDays)
     command += `--after="${startDate} 00:00:00"`
-    if (effectiveDays === 0) {
+    if (beforeEndOfDay) {
       command += ` --before="${startDate} 23:59:59"`
     }
   }
