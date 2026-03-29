@@ -2,17 +2,12 @@ import type { InitxContext, InitxMatcherRules } from '@initx-plugin/core'
 import type { Store } from './types'
 import { InitxPlugin } from '@initx-plugin/core'
 import { logger } from '@initx-plugin/utils'
+import { DATE_REGEX, DEFAULT_STORE } from './constants'
 import { handleConfig } from './handlers/config'
 import { generateReport } from './handlers/report'
 
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/
-
 export default class GitReportPlugin extends InitxPlugin<Store> {
-  defaultStore = {
-    name: '',
-    email: '',
-    prefix: ['fix', 'feat', 'perf', 'refactor']
-  }
+  defaultStore = DEFAULT_STORE
 
   rules: InitxMatcherRules = [
     {
@@ -29,6 +24,8 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
           if (args[1] === 'list')
             return true
           if (args[1] === 'set' && ['name', 'email', 'prefix'].includes(args[2]) && args[3])
+            return true
+          if (args[1] === 'remove' && ['name', 'email', 'prefix'].includes(args[2]))
             return true
           if (args[1] === 'get' && args[2])
             return true

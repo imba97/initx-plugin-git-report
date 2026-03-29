@@ -1,10 +1,7 @@
 import type { InitxContext } from '@initx-plugin/core'
-import type { Store } from '../types'
+import type { Store, StoreKey } from '../types'
 import { logger } from '@initx-plugin/utils'
-
-const NOT_SET = '(not set)'
-
-type StoreKey = keyof Store
+import { DEFAULT_STORE, NOT_SET } from '../constants'
 
 const SET_HANDLERS: Partial<Record<StoreKey, (store: Store, value: string) => void>> = {
   prefix: (store, value) => { store.prefix = value.split(',').map(p => p.trim()).filter(Boolean) }
@@ -36,6 +33,12 @@ export async function handleConfig(ctx: InitxContext<Store>, ...args: string[]) 
     else
       (ctx.store[storeKey] as string) = value || ''
     logger.success(`Set ${key}: ${value}`)
+    return
+  }
+
+  if (action === 'remove' && storeKey in ctx.store) {
+    (ctx.store[storeKey] as any) = DEFAULT_STORE[storeKey]
+    logger.success(`Removed ${key}, restored to default`)
     return
   }
 

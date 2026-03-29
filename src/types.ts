@@ -3,3 +3,5 @@ export interface Store {
   email: string
   prefix: string[]
 }
+
+export type StoreKey = keyof Store
