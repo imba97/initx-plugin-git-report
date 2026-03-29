@@ -22,9 +22,11 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
   }
 
   let command = `git log --author="${name} <${email}>" `
+  let displayDate: string
 
   if (date) {
     command += `--after="${date} 00:00:00" --before="${date} 23:59:59"`
+    displayDate = date
   }
   else {
     let effectiveDays: number
@@ -46,6 +48,7 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     if (beforeEndOfDay) {
       command += ` --before="${startDate} 23:59:59"`
     }
+    displayDate = startDate
   }
 
   try {
@@ -55,7 +58,7 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     })
 
     const commits = parseCommits(result, prefix, showTime)
-    displayCommits(projectPath, commits)
+    displayCommits(projectPath, commits, displayDate)
   }
   catch {
     logger.error('Failed to get git log')
