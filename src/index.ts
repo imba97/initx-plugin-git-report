@@ -1,9 +1,12 @@
 import type { InitxContext, InitxMatcherRules } from '@initx-plugin/core'
+import type { ProjectReportResult } from './handlers/display'
 import type { Store } from './types'
 import { InitxPlugin } from '@initx-plugin/core'
 import { logger } from '@initx-plugin/utils'
 import { DATE_REGEX, DEFAULT_STORE } from './constants'
 import { handleConfig } from './handlers/config'
+import { displayProjectReports } from './handlers/display'
+import { handleProject } from './handlers/project'
 import { generateReport } from './handlers/report'
 
 export default class GitReportPlugin extends InitxPlugin<Store> {
@@ -16,6 +19,9 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
       optional: [
         undefined,
         'config',
+        'list',
+        'add',
+        'remove',
         /^\d+$/,
         DATE_REGEX
       ],
@@ -31,6 +37,8 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
             return true
           return false
         }
+        if (['list', 'add', 'remove'].includes(args[0]))
+          return true
         if (args[0] === undefined)
           return true
         const days = Number(args[0])
@@ -47,6 +55,11 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
 
     if (args[0] === 'config') {
       await handleConfig(ctx, ...args.slice(1))
+      return
+    }
+
+    if (['list', 'add', 'remove'].includes(args[0])) {
+      await handleProject(ctx, ...args)
       return
     }
 
@@ -69,6 +82,43 @@ export default class GitReportPlugin extends InitxPlugin<Store> {
     }
     else {
       days = args[0] === undefined ? 0 : Number(args[0])
+    }
+
+    if (ctx.cliOptions.project || ctx.cliOptions.p) {
+      if (ctx.store.projects.length === 0) {
+        logger.warn('No projects configured. Use: ix gr add <path>')
+        return
+      }
+
+      const reports: ProjectReportResult[] = []
+      let displayDate = ''
+
+      for (const project of ctx.store.projects) {
+        const result = await generateReport(ctx, days, date, hasTime, {
+          projectPath: project.path,
+          silent: true
+        })
+
+        if (!result) {
+          logger.warn(`Skipped project: ${project.name} (${project.path})`)
+          continue
+        }
+
+        displayDate = displayDate || result.displayDate
+        reports.push({
+          name: project.name,
+          path: project.path,
+          commits: result.commits
+        })
+      }
+
+      if (!displayDate) {
+        logger.error('Failed to generate project reports')
+        return
+      }
+
+      displayProjectReports(displayDate, reports)
+      return
     }
 
     await generateReport(ctx, days, date, hasTime)

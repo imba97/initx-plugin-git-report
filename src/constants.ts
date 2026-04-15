@@ -7,5 +7,6 @@ export const NOT_SET = '(not set)'
 export const DEFAULT_STORE: Store = {
   name: '',
   email: '',
-  prefix: []
+  prefix: [],
+  projects: []
 }

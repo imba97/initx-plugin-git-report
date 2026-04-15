@@ -7,6 +7,8 @@
 - Generate daily git reports based on author and date
 - Filter commits by custom prefixes
 - Support multiple query methods (days, date)
+- Support multi-project report aggregation with `-p/--project`
+- Manage project list with `list/add/remove` commands
 - Persistent configuration storage
 
 ## Installation
@@ -28,6 +30,14 @@ ix gr 7
 
 # Get report for specific date
 ix gr 2026-03-22
+
+# Get report with commit time
+ix gr --time
+
+# Get report for configured projects
+ix gr -p
+# or
+ix gr --project
 ```
 
 **Note:** For days parameter: `0` or `1` = today, `2` = 2 days ago, `3` = 3 days ago, etc.
@@ -55,6 +65,35 @@ ix gr config get email
 ix gr config get prefix
 ```
 
+### Project Management
+
+Use project list commands to manage multi-project report targets:
+
+```bash
+# List all configured projects
+ix gr list
+
+# Add a project by relative path (current directory)
+ix gr add .
+
+# Add a project by absolute path
+ix gr add /Users/you/workspace/project-a
+
+# Remove by path
+ix gr remove /Users/you/workspace/project-a
+
+# Remove interactively (checkbox prompt)
+ix gr remove
+```
+
+Stored format in plugin store:
+
+```json
+[
+  { "name": "project-a", "path": "/Users/you/workspace/project-a" }
+]
+```
+
 ### How It Works
 
 The plugin:
@@ -67,9 +106,13 @@ The plugin:
 ### Example Output
 
 ```
-my-project
+2026-04-15
+
+project-a
 - Add new feature for user authentication
 - Fix bug in login flow
+
+project-b
 - Update documentation for API
 ```
 
