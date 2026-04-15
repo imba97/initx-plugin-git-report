@@ -21,11 +21,14 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
     logger.warn('git fetch failed, using local data')
   }
 
-  let command = `git log --author="${name} <${email}>" `
+  const command = `git log --author="${name} <${email}>" --pretty=format:"%aI%x1F%s"`
   let displayDate: string
+  let startDate: string
+  let endDate: string | null = null
 
   if (date) {
-    command += `--after="${date} 00:00:00" --before="${date} 23:59:59"`
+    startDate = date
+    endDate = date
     displayDate = date
   }
   else {
@@ -43,10 +46,9 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
       beforeEndOfDay = effectiveDays === 0
     }
 
-    const startDate = getDateDaysAgo(effectiveDays)
-    command += `--after="${startDate} 00:00:00"`
+    startDate = getDateDaysAgo(effectiveDays)
     if (beforeEndOfDay) {
-      command += ` --before="${startDate} 23:59:59"`
+      endDate = startDate
     }
     displayDate = startDate
   }
@@ -57,7 +59,7 @@ export async function generateReport(ctx: InitxContext<Store>, days: number, dat
       encoding: 'utf-8'
     })
 
-    const commits = parseCommits(result, prefix, showTime)
+    const commits = parseCommits(result, prefix, showTime, startDate, endDate)
     displayCommits(projectPath, commits, displayDate)
   }
   catch {
