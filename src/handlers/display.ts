@@ -7,7 +7,7 @@ export interface ProjectReportResult {
   commits: string[]
 }
 
-export function displayCommits(projectPath: string, commits: string[], displayDate: string) {
+export function displayCommits(commits: string[], displayDate: string) {
   if (commits.length === 0) {
     logger.info('No matching commits found')
     return

@@ -99,7 +99,7 @@ export async function generateReport(
 
     const commits = parseCommits(result, prefix, showTime, startDate, endDate)
     if (!silent) {
-      displayCommits(projectPath, commits, displayDate)
+      displayCommits(commits, displayDate)
     }
 
     return {
